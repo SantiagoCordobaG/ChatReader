@@ -3,6 +3,7 @@ const ASSETS_TO_CACHE = [
     './',
     'index.html',
     'public/viewer.html',
+    'public/gallery.html',
     'public/wrapped.html',
     'public/analyzer.html',
     'public/how-it-works.html',

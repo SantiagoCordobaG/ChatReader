@@ -5,6 +5,12 @@
 ChatLume (Formerly Obsidian) is a privacy-first WhatsApp export viewer.
 It parses exported `.txt` files (or `.zip` files that contain a `.txt`) directly in your browser and renders a WhatsApp-like chat UI with search, analytics, and inline media support.
 
+## Attribution
+
+This repository is a derivative work of [ChatLume](https://github.com/ParasSharma2306/ChatLume), originally created by Paras Sharma.
+
+Changes in this fork may include custom UI, parser updates, and feature additions specific to this version.
+
 ## Privacy
 
 - All parsing is local in the browser.

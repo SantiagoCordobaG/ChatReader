@@ -2076,3 +2076,63 @@ body.light-theme .sent .meta { color: rgba(17, 27, 33, 0.56); }
     text-transform: uppercase;
     letter-spacing: 1px;
 }
+
+.gallery-upload-box {
+    display: grid;
+    gap: 14px;
+    text-align: left;
+    margin-bottom: 24px;
+}
+
+.gallery-count {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.gallery-grid-wrap {
+    min-height: 180px;
+}
+
+.gallery-empty {
+    text-align: center;
+    color: var(--text-secondary);
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+    padding: 24px;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 14px;
+}
+
+.gallery-item {
+    border: 1px solid var(--border);
+    background: var(--bg-sidebar);
+    border-radius: 12px;
+    padding: 8px;
+    display: grid;
+    gap: 8px;
+    text-align: left;
+}
+
+.gallery-item:hover {
+    border-color: var(--primary);
+}
+
+.gallery-item img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}
+
+.gallery-item span {
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

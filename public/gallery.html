@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatLume Gallery - ZIP Images Viewer</title>
+    <meta name="description" content="Load your WhatsApp export ZIP and browse all images in a clean gallery view.">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="../js/script.js" defer></script>
+</head>
+<body class="page-layout">
+    <nav class="landing-nav">
+        <div class="logo"><i class="ph-fill ph-chat-teardrop-text"></i> ChatLume</div>
+        <div class="nav-links">
+            <a href="../index.html">Home</a>
+            <a href="./viewer.html">Viewer</a>
+            <a href="./wrapped.html">Wrapped</a>
+            <a href="./analyzer.html">Analyzer</a>
+        </div>
+    </nav>
+    <main class="content-container">
+        <div class="text-center" style="margin-bottom: 28px;">
+            <h1 style="font-size: 40px; margin-bottom: 10px;">ZIP <span class="highlight">Image Gallery</span></h1>
+            <p>Load your WhatsApp export and browse every image found in the ZIP.</p>
+        </div>
+
+        <section class="upload-box-large gallery-upload-box">
+            <div class="input-wrapper">
+                <label for="gallery-display-name">Display Name</label>
+                <input type="text" id="gallery-display-name" placeholder="Exact name in chat">
+            </div>
+            <div class="input-wrapper">
+                <label for="gallery-file-input">WhatsApp Export (.txt or .zip)</label>
+                <input type="file" id="gallery-file-input" accept=".txt,.zip">
+            </div>
+            <button class="btn-primary" id="gallery-load-chat" type="button">Load Gallery</button>
+            <p class="gallery-count">Images found: <strong id="gallery-count">0</strong></p>
+        </section>
+
+        <section class="gallery-grid-wrap">
+            <p id="gallery-empty" class="gallery-empty">Load a ZIP export to show images.</p>
+            <div id="gallery-grid" class="gallery-grid" aria-live="polite"></div>
+        </section>
+    </main>
+
+    <div class="media-modal" id="media-modal" hidden>
+        <button class="media-modal-backdrop" id="media-modal-backdrop" type="button"></button>
+        <div class="media-modal-dialog" role="dialog" aria-modal="true">
+            <div class="media-modal-header">
+                <div>
+                    <h2>Media Preview</h2>
+                    <p id="media-modal-subtitle"></p>
+                </div>
+                <div class="media-modal-actions">
+                    <a class="media-download" id="media-download-link" href="#" download>Download</a>
+                    <button id="media-modal-close" type="button"><i class="ph ph-x"></i></button>
+                </div>
+            </div>
+            <div class="media-modal-body" id="media-modal-body"></div>
+        </div>
+    </div>
+
+    <div id="toast" aria-live="polite">Ready</div>
+</body>
+</html>

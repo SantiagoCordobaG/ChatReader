@@ -64,6 +64,7 @@ function bindUI() {
     $("sidebar-backdrop")?.addEventListener("click", toggleSidebar);
     $("chat-list-item")?.addEventListener("click", handleChatSelect);
     $("load-chat")?.addEventListener("click", initViewer);
+    $("gallery-load-chat")?.addEventListener("click", initGalleryViewer);
     $("copy-upi")?.addEventListener("click", copyUPI);
     $("open-pfp-upload")?.addEventListener("click", () => $("pfp-upload")?.click());
     
@@ -127,6 +128,7 @@ function bindUI() {
     setupDropTarget();
     $("viewport")?.addEventListener("scroll", handleViewportScroll);
     $("message-list")?.addEventListener("click", handleMessageListClick);
+    $("gallery-grid")?.addEventListener("click", handleMessageListClick);
     document.addEventListener("click", handleDocumentClick);
     document.addEventListener("keydown", handleGlobalKeydown);
 }
@@ -461,8 +463,12 @@ function resetChatState() {
     state.activeMediaId = "";
     disconnectMediaObserver();
     updateSearchCounter();
-    $("message-list").innerHTML = "";
-    $("emoji-grid").innerHTML = "";
+    if ($("message-list")) {
+        $("message-list").innerHTML = "";
+    }
+    if ($("emoji-grid")) {
+        $("emoji-grid").innerHTML = "";
+    }
 }
 
 function cleanupMediaStore() {
@@ -572,6 +578,7 @@ function extractAttachmentTokens(text) {
     const matches = [];
     const patterns = [
         /<attached:\s*([^>]+)>/gi,
+        /<adjunto:\s*([^>]+)>/gi,
         /\u200e?([^()\n]+?\.[a-z0-9]{2,5})\s+\((?:file attached|datei angehängt)\)/gi
     ];
 
@@ -641,8 +648,14 @@ function findMediaByName(fileName) {
 }
 
 function generateStats() {
-    $("stat-total").innerText = state.messageOnlyCount.toLocaleString();
-    $("stat-media").innerText = state.mediaCount.toLocaleString();
+    const statTotal = $("stat-total");
+    const statMedia = $("stat-media");
+    if (statTotal) {
+        statTotal.innerText = state.messageOnlyCount.toLocaleString();
+    }
+    if (statMedia) {
+        statMedia.innerText = state.mediaCount.toLocaleString();
+    }
 
     const list = $("stats-list");
     if (list) {
@@ -679,6 +692,80 @@ function generateStats() {
             `).join("");
         }
     }
+}
+
+async function initGalleryViewer() {
+    if (state.isLoading) return;
+
+    const fileInput = $("gallery-file-input");
+    const nameInput = $("gallery-display-name");
+    const file = fileInput?.files?.[0];
+    const displayName = nameInput?.value.trim();
+
+    if (!file) {
+        showToast("Please select a file");
+        return;
+    }
+    if (!displayName) {
+        showToast("Enter your display name");
+        return;
+    }
+
+    state.myName = displayName;
+    cleanupMediaStore();
+    resetChatState();
+
+    const loadButton = $("gallery-load-chat");
+    if (loadButton) {
+        loadButton.disabled = true;
+    }
+
+    try {
+        const { rawText, attachments } = await loadChatExport(file);
+        buildMediaStore(attachments);
+        await parseChatData(rawText);
+        renderGalleryMedia();
+        showToast(`Loaded ${state.mediaCount.toLocaleString()} media items`);
+    } catch (error) {
+        console.error(error);
+        showToast(`Error: ${error.message}`);
+    } finally {
+        if (loadButton) {
+            loadButton.disabled = false;
+        }
+    }
+}
+
+function renderGalleryMedia() {
+    const grid = $("gallery-grid");
+    const empty = $("gallery-empty");
+    const count = $("gallery-count");
+    if (!grid || !empty) return;
+
+    const mediaItems = Array.from(state.mediaStore.values()).filter((media) => {
+        return media.kind === "image" || media.kind === "sticker";
+    });
+
+    if (count) {
+        count.innerText = mediaItems.length.toLocaleString();
+    }
+
+    if (!mediaItems.length) {
+        grid.innerHTML = "";
+        empty.hidden = false;
+        empty.innerText = "No images found in this export ZIP.";
+        return;
+    }
+
+    empty.hidden = true;
+    grid.innerHTML = mediaItems.map((media) => {
+        return `
+            <button type="button" class="gallery-item" data-open-media="${media.id}">
+                <img src="${escapeAttribute(media.url)}" alt="${escapeAttribute(media.name)}" loading="lazy" decoding="async">
+                <span>${escapeHtml(media.name)}</span>
+            </button>
+        `;
+    }).join("");
 }
 
 // Visual Wrapper Logic
